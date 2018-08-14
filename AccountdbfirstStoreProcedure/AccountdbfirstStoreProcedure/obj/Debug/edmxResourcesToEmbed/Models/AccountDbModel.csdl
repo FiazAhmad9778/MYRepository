@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="AccountDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="AspNetUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+    <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+    <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+    <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+    <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="UserAccounts" Relationship="Self.FK_dbo_UserAccounts_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="UserAccounts" />
+  </EntityType>
+  <EntityType Name="Ledger">
+    <Key>
+      <PropertyRef Name="LedgerId" />
+    </Key>
+    <Property Name="LedgerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Debit" Type="Single" Nullable="false" />
+    <Property Name="Credit" Type="Single" Nullable="false" />
+    <Property Name="AccountId" Type="Int32" Nullable="false" />
+    <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="UserAccount" Relationship="Self.FK_dbo_Ledgers_dbo_UserAccounts_AccountId" FromRole="Ledgers" ToRole="UserAccounts" />
+  </EntityType>
+  <EntityType Name="UserAccount">
+    <Key>
+      <PropertyRef Name="AccountId" />
+    </Key>
+    <Property Name="AccountId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Level" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Code" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_UserAccounts_dbo_AspNetUsers_UserId" FromRole="UserAccounts" ToRole="AspNetUsers" />
+    <NavigationProperty Name="Ledgers" Relationship="Self.FK_dbo_Ledgers_dbo_UserAccounts_AccountId" FromRole="UserAccounts" ToRole="Ledgers" />
+  </EntityType>
+  <EntityType Name="LedgerDetailWithName">
+    <Key>
+      <PropertyRef Name="Name" />
+      <PropertyRef Name="LedgerId" />
+      <PropertyRef Name="Debit" />
+      <PropertyRef Name="Credit" />
+      <PropertyRef Name="AccountId" />
+      <PropertyRef Name="DateAdded" />
+    </Key>
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="LedgerId" Type="Int32" Nullable="false" />
+    <Property Name="Debit" Type="Single" Nullable="false" />
+    <Property Name="Credit" Type="Single" Nullable="false" />
+    <Property Name="AccountId" Type="Int32" Nullable="false" />
+    <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <Association Name="FK_dbo_UserAccounts_dbo_AspNetUsers_UserId">
+    <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
+    <End Role="UserAccounts" Type="Self.UserAccount" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="UserAccounts">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Ledgers_dbo_UserAccounts_AccountId">
+    <End Role="UserAccounts" Type="Self.UserAccount" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Ledgers" Type="Self.Ledger" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserAccounts">
+        <PropertyRef Name="AccountId" />
+      </Principal>
+      <Dependent Role="Ledgers">
+        <PropertyRef Name="AccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="AccountDbEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
+    <EntitySet Name="Ledgers" EntityType="Self.Ledger" />
+    <EntitySet Name="UserAccounts" EntityType="Self.UserAccount" />
+    <EntitySet Name="LedgerDetailWithNames" EntityType="Self.LedgerDetailWithName" />
+    <AssociationSet Name="FK_dbo_UserAccounts_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_UserAccounts_dbo_AspNetUsers_UserId">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="UserAccounts" EntitySet="UserAccounts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Ledgers_dbo_UserAccounts_AccountId" Association="Self.FK_dbo_Ledgers_dbo_UserAccounts_AccountId">
+      <End Role="UserAccounts" EntitySet="UserAccounts" />
+      <End Role="Ledgers" EntitySet="Ledgers" />
+    </AssociationSet>
+    <FunctionImport Name="spCreateReportSummary" ReturnType="Collection(AccountDbModel.spCreateReportSummary_Result)">
+      <Parameter Name="fromdate" Mode="In" Type="DateTime" />
+      <Parameter Name="todate" Mode="In" Type="DateTime" />
+      <Parameter Name="Accountid" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="spGetLedgerSummaryOfAlluserInGivenDates" ReturnType="Collection(AccountDbModel.spGetLedgerSummaryOfAlluserInGivenDates_Result)">
+      <Parameter Name="fromdate" Mode="In" Type="DateTime" />
+      <Parameter Name="todate" Mode="In" Type="DateTime" />
+    </FunctionImport>
+    <FunctionImport Name="spGETLedgerwithAccountId" ReturnType="Collection(AccountDbModel.spGETLedgerwithAccountId_Result)">
+      <Parameter Name="AccountId" Mode="In" Type="Int32" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="spCreateReportSummary_Result">
+    <Property Type="String" Name="Name" Nullable="false" />
+    <Property Type="Double" Name="debit" Nullable="true" />
+    <Property Type="Double" Name="credit" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="spGetLedgerSummaryOfAlluserInGivenDates_Result">
+    <Property Type="String" Name="name" Nullable="false" />
+    <Property Type="Double" Name="debit" Nullable="true" />
+    <Property Type="Double" Name="credit" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="spGETLedgerwithAccountId_Result">
+    <Property Type="Int32" Name="LedgerId" Nullable="false" />
+    <Property Type="Single" Name="Debit" Nullable="false" />
+    <Property Type="Single" Name="Credit" Nullable="false" />
+    <Property Type="Int32" Name="AccountId" Nullable="false" />
+    <Property Type="DateTime" Name="DateAdded" Nullable="false" Precision="23" />
+  </ComplexType>
+</Schema>

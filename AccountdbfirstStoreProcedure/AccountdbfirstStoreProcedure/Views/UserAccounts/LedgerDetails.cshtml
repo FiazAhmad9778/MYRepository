@@ -1,0 +1,28 @@
+﻿@model List<AccountdbfirstStoreProcedure.Models.Ledger> 
+@using GridMvc.Html
+@{
+    ViewBag.Title = "ViewAllAccount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    @Html.Grid(Model).Columns(Columns =>
+{
+    Columns.Add(c => c.AccountId).Titled("Id");
+    Columns.Add(c =>c.DateAdded).Titled("Date").Filterable(true)
+    .Sortable(true);
+    Columns.Add(c => c.Debit).Titled("Debit").Filterable(true);
+    Columns.Add(c => c.Credit).Titled("Credit").Filterable(true);
+    Columns.Add()
+        .Encoded(false)
+        .Sanitized(false)
+        .SetWidth(30)
+        .RenderValueAs(l => Html.ActionLink("Edit", "Edit", "UserAccounts", new { accountId = l.AccountId},null));
+
+}).WithPaging(2).Sortable(true)
+
+
+
+</div>
+
+

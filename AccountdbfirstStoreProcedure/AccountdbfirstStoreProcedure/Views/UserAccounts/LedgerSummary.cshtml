@@ -1,0 +1,35 @@
+﻿@using System.Data
+@using GridMvc.Html
+@model DataSet
+@{
+    ViewBag.Title = "ViewDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+
+
+
+    WebGrid webGrid = new WebGrid(source: (from p in Model.Tables[0].AsEnumerable()
+                                           select new
+                                           {
+                                               Name = p.Field<string>("Name"),
+                                               Debit = p.Field<Double>("Debit"),
+                                               Credit = p.Field<Double>("Credit")
+                                           }), canPage: true, rowsPerPage: 10,canSort:true);
+    
+}
+
+
+<h4 class="alert-success"> All Transections in this Month.</h4>
+@webGrid.GetHtml(
+
+    tableStyle: "table table-striped table-hover",
+    headerStyle: "header",
+    alternatingRowStyle: "alt",
+    selectedRowStyle: "select",
+
+    columns: webGrid.Columns(
+       webGrid.Column("Name", "Name"),
+        webGrid.Column("Credit", "Credit"),
+        webGrid.Column("Debit", "Debit")))
+

@@ -1,0 +1,99 @@
+﻿@model List<AccountdbfirstStoreProcedure.Models.UserAccount> 
+    @using GridMvc.Html
+@{
+    ViewBag.Title = "ViewAllAccount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    @Html.Grid(Model).Columns(Columns =>
+{
+    Columns.Add(c => c.AccountId).Titled("Id");
+    Columns.Add(c =>c.Name).Titled("Name").Filterable(true)
+    .Sortable(true);
+    Columns.Add(c => c.Code).Titled("Code").Filterable(true);
+    Columns.Add(c => c.Level).Titled("Level").Filterable(true);
+    Columns.Add()
+        .Encoded(false)
+        .Sanitized(false)
+        .SetWidth(30)
+        .RenderValueAs(l => Html.ActionLink("Edit", "Edit", "UserAccounts", new { accountId = l.AccountId},null));
+
+}).WithPaging(5).Sortable(true)
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<table class="table table-dark">
+    <thead>
+        <tr>
+            <th >Acoount Id</th>
+            <th >Account Name</th>
+            <th >Code</th>
+            <th >Level</th>
+            <th >Action</th>
+        </tr>
+    </thead>
+    <tbody>
+   
+       
+      @foreach (var list in Model)
+    {
+        <tr>
+        <td>@list.AccountId</td>
+        <td>@list.Name</td>
+        <td>@list.Code</td>
+        <td>@list.Level</td>
+        <td>
+
+            @Html.ActionLink("Details", "ViewDetails", "UserAccounts", new { accountId = list.AccountId }, null)
+        </td>
+
+        </tr>
+
+    }
+        
+    </tbody>
+</table>*@

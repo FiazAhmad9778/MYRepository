@@ -1,0 +1,37 @@
+﻿@model List<Account_Assingment.Models.Ledger>  
+
+@{
+    ViewBag.Title = "ViewDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="alert-success"> All Transections in this Month.</h4>
+
+<table class="table table-dark">
+    <thead>
+    <tr>
+        <th >Acoount Id</th>
+        <th >Transection Date</th>
+        <th >Dabit</th>
+        <th >Credit</th>
+       
+    </tr>
+    </thead>
+    <tbody>
+   
+    
+        @foreach (var list in Model)
+        {
+            <tr>
+            <td>@list.AccountId</td>
+            <td>@list.Date</td>
+            <td>@list.Debit</td>
+            <td>@list.Credit</td>
+            
+
+            </tr>
+
+        }
+    
+    </tbody>
+</table>
